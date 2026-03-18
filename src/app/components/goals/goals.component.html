@@ -1,0 +1,117 @@
+<div class="page-header">
+  <h2>Savings Goals</h2>
+  <button class="btn btn-primary" (click)="toggleAddForm()">
+    {{ showAddForm ? 'Cancel' : '+ New Goal' }}
+  </button>
+</div>
+
+<!-- Add Goal Form -->
+<div *ngIf="showAddForm" class="card add-form-card mb-4">
+  <div class="card-header">
+    <h3 class="card-title">Create New Savings Goal</h3>
+  </div>
+  <div class="card-body">
+    <form (ngSubmit)="addGoal()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Goal Name</label>
+          <input type="text" [(ngModel)]="newGoal.name" name="name" required placeholder="e.g. New Laptop" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Target Amount (₹)</label>
+          <input type="number" [(ngModel)]="newGoal.targetAmount" name="targetAmount" required min="0" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Target Date</label>
+          <input type="date" [(ngModel)]="newGoal.deadline" name="deadline" required class="form-control">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Create Goal</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Goals Grid -->
+<div class="goals-grid">
+  <div *ngFor="let goal of goals; trackBy: trackById" class="goal-card">
+    <div class="goal-header">
+      <div class="goal-icon">{{ goal.icon }}</div>
+      <h3 class="goal-name">{{ goal.name }}</h3>
+      <div class="goal-date">
+        Target: {{ goal.deadline | date:'mediumDate' }}
+      </div>
+    </div>
+    
+    <div class="goal-progress-container">
+      <div class="progress-bar large">
+        <div class="progress-fill" [style.width.%]="getProgress(goal)"></div>
+      </div>
+      <div class="progress-text">
+        <span class="progress-percent">{{ getProgress(goal) }}%</span>
+        <span class="progress-label">to goal</span>
+      </div>
+    </div>
+
+    <div class="goal-amounts">
+      <div class="current-amount">
+        Saved: {{ goal.currentAmount | currency:'INR' }}
+      </div>
+      <div class="target-amount">
+        Goal: {{ goal.targetAmount | currency:'INR' }}
+      </div>
+      <div class="remaining-amount">
+        Need: {{ (goal.targetAmount - goal.currentAmount) | currency:'INR' }}
+      </div>
+    </div>
+
+    <div class="goal-actions">
+      <div class="add-progress">
+        <input 
+          *ngIf="editGoalId === goal.id" 
+          type="number" 
+          [(ngModel)]="editAmount" 
+          placeholder="Add amount"
+          class="progress-input"
+          (keyup.enter)="addGoalProgress(goal.id)"
+        >
+        <button 
+          *ngIf="editGoalId !== goal.id" 
+          class="btn btn-success" 
+          (click)="startEditing(goal.id)"
+        >
+          + Add Progress
+        </button>
+        <button 
+          *ngIf="editGoalId === goal.id" 
+          class="btn btn-primary btn-sm" 
+          (click)="addGoalProgress(goal.id)"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="getProgress(goal) >= 100" class="goal-completed">
+      🎉 Goal Completed!
+    </div>
+  </div>
+</div>
+
+<!-- Goals Tips -->
+<div class="card tips-card mt-4">
+  <div class="card-header">
+    <h3 class="card-title">💡 Tips for Reaching Your Goals</h3>
+  </div>
+  <div class="card-body">
+    <ul class="tips-list">
+      <li>Break large goals into smaller milestones</li>
+      <li>Automate transfers to savings immediately after receiving money</li>
+      <li>Visualize your progress daily</li>
+      <li>Celebrate milestones, not just completion</li>
+      <li>Review progress weekly and adjust as needed</li>
+    </ul>
+  </div>
+</div>
+

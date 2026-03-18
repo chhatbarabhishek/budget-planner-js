@@ -1,0 +1,102 @@
+<div class="page-header">
+  <h2>Budget Management</h2>
+  <button class="btn btn-primary" (click)="toggleAddForm()">
+    {{ showAddForm ? 'Cancel' : '+ Add Category' }}
+  </button>
+</div>
+
+<!-- Add Budget Category Form -->
+<div *ngIf="showAddForm" class="card add-form-card mb-4">
+  <div class="card-header">
+    <h3 class="card-title">Add Budget Category</h3>
+  </div>
+  <div class="card-body">
+    <form (ngSubmit)="addBudgetCategory()">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Category Name</label>
+          <input type="text" [(ngModel)]="newCategory" name="newCategory" required class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Monthly Limit (₹)</label>
+          <input type="number" [(ngModel)]="newLimit" name="newLimit" required min="0" class="form-control">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Add Category</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Budget Cards -->
+<div class="budget-grid">
+  <div *ngFor="let budget of budgets; trackBy: trackByCategory" class="budget-card">
+    <div class="budget-header">
+      <div class="budget-info">
+        <h3 class="budget-name">{{ budget.category }}</h3>
+        <span class="budget-status" [class]="getStatus(budget)">{{ getStatusText(budget) }}</span>
+      </div>
+      <div class="budget-progress">
+        <div class="progress-circle" [style.--progress]="getProgress(budget)">
+          <span class="progress-value">{{ getProgress(budget) }}%</span>
+        </div>
+      </div>
+    </div>
+    <div class="budget-numbers">
+      <div class="budget-spent">
+        <span class="label">Spent</span>
+        <span class="value">{{ budget.spent | currency:'INR' }}</span>
+      </div>
+      <div class="budget-remaining">
+        <span class="label">Remaining</span>
+        <span class="value">{{ (budget.limit - budget.spent) | currency:'INR' }}</span>
+      </div>
+      <div class="budget-limit">
+        <span class="label">Limit</span>
+        <span class="value limit">{{ budget.limit | currency:'INR' }}</span>
+      </div>
+    </div>
+    <div class="budget-actions">
+      <button class="btn btn-outline" (click)="updateBudgetLimit(budget.category, budget.limit)">
+        Edit Limit
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Budget Limit Modal -->
+<div *ngIf="editCategory" class="modal-overlay" (click)="saveBudgetLimit()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Edit Budget Limit</h3>
+      <button class="close-btn" (click)="saveBudgetLimit()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>{{ editCategory }} Limit (₹)</label>
+        <input type="number" [(ngModel)]="editLimit" class="form-control" min="0">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" (click)="saveBudgetLimit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Budget Tips -->
+<div class="card tips-card mt-4">
+  <div class="card-header">
+    <h3 class="card-title">💡 Budget Tips for Students</h3>
+  </div>
+  <div class="card-body">
+    <ul class="tips-list">
+      <li>Follow the 50/30/20 rule: 50% needs, 30% wants, 20% savings</li>
+      <li>Track every expense, no matter how small</li>
+      <li>Review and adjust your budget monthly</li>
+      <li>Build an emergency fund (3-6 months expenses)</li>
+      <li>Use cash for discretionary spending</li>
+    </ul>
+  </div>
+</div>
+

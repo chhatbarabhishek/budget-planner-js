@@ -1,0 +1,114 @@
+<div class="page-header">
+  <h2>Financial Analytics</h2>
+  <div class="header-stats">
+    <div class="stat-card">
+      <div class="stat-value">₹{{ totalIncome | number:'1.0-0' }}</div>
+      <div class="stat-label">Total Income</div>
+    </div>
+    <div class="stat-card negative">
+      <div class="stat-value">₹{{ totalExpenses | number:'1.0-0' }}</div>
+      <div class="stat-label">Total Expenses</div>
+    </div>
+    <div class="stat-card" [class]="netBalance >= 0 ? 'positive' : 'negative'">
+      <div class="stat-value">{{ netBalance >= 0 ? '+' : '' }}₹{{ netBalance | number:'1.0-0' }}</div>
+      <div class="stat-label">Net Balance</div>
+    </div>
+  </div>
+</div>
+
+<div class="analytics-grid">
+  <!-- Spending Chart -->
+  <div class="card chart-card">
+    <div class="card-header">
+      <h3 class="card-title">Spending by Category</h3>
+    </div>
+    <div class="card-body">
+      <div class="chart-container">
+        <canvas #spendingChart></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Budget Utilization Table -->
+  <div class="card table-card">
+    <div class="card-header">
+      <h3 class="card-title">Budget Utilization</h3>
+    </div>
+    <div class="card-body">
+      <div class="table-container">
+        <table class="analytics-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Spent</th>
+              <th>Limit</th>
+              <th>Utilization</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of categoryBreakdown">
+              <td>{{ item.category }}</td>
+              <td>{{ item.spent | currency:'INR' }}</td>
+              <td>{{ item.limit | currency:'INR' }}</td>
+              <td>{{ item.utilization }}%</td>
+              <td>
+                <span class="status-badge" [class]="getStatus(item.utilization)">
+                  {{ getStatusText(item.utilization) }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Monthly Trends -->
+<div class="card trends-card mt-4">
+  <div class="card-header">
+    <h3 class="card-title">Recent Activity</h3>
+  </div>
+  <div class="card-body">
+    <div class="activity-feed">
+      <div *ngFor="let transaction of transactions.slice().reverse().slice(0,5)" class="activity-item">
+        <div class="activity-icon" [class]="transaction.type">
+          {{ transaction.type === 'income' ? '↑' : '↓' }}
+        </div>
+        <div class="activity-content">
+          <div class="activity-desc">{{ transaction.description }}</div>
+          <div class="activity-meta">
+            <span class="category">{{ transaction.category }}</span> • 
+            <span class="date">{{ transaction.date | date:'short' }}</span>
+          </div>
+        </div>
+        <div class="activity-amount" [class]="transaction.type">
+          {{ transaction.type === 'income' ? '+' : '-' }}{{ transaction.amount | currency:'INR':'symbol':'1.0-0' }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Insights -->
+<div class="insights-grid mt-6">
+  <div class="insight-card">
+    <div class="insight-icon">📊</div>
+    <h4>Top Spending Category</h4>
+    <p *ngIf="categoryBreakdown.length > 0">
+      {{ categoryBreakdown.reduce((max, item) => item.spent > max.spent ? item : max, categoryBreakdown[0]).category }}
+    </p>
+  </div>
+  <div class="insight-card">
+    <div class="insight-icon warning">⚠️</div>
+    <h4>Overspent Categories</h4>
+    <p>{{ (categoryBreakdown || []).filter(item => parseFloat(item.utilization) > 100).length }}</p>
+  </div>
+  <div class="insight-card">
+    <div class="insight-icon success">🎯</div>
+    <h4>On Track</h4>
+    <p>{{ ((categoryBreakdown || []).filter(item => parseFloat(item.utilization) <= 80).length / (categoryBreakdown || []).length * 100).toFixed(0) }}%</p>
+  </div>
+</div>
+

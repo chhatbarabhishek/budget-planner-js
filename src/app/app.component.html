@@ -1,0 +1,61 @@
+<div class="app-container">
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1 class="logo">💰 Budget Planner</h1>
+      <p class="tagline">For Students</p>
+    </div>
+    <ul class="nav-menu">
+      <li>
+        <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/transactions" routerLinkActive="active" class="nav-link">
+          <span class="nav-icon">💳</span>
+          <span>Transactions</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/budget" routerLinkActive="active" class="nav-link">
+          <span class="nav-icon">📈</span>
+          <span>Budget</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/goals" routerLinkActive="active" class="nav-link">
+          <span class="nav-icon">🎯</span>
+          <span>Goals</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/analytics" routerLinkActive="active" class="nav-link">
+          <span class="nav-icon">📉</span>
+          <span>Analytics</span>
+        </a>
+      </li>
+    </ul>
+    <div class="sidebar-footer">
+      <div class="budget-summary">
+        <p class="summary-label">Monthly Budget</p>
+        <p class="summary-value">{{ remainingBudget | currency:'INR':'symbol':'1.2-2' }}</p>
+        <p class="summary-status" [class]="budgetStatus">{{ budgetStatusText }}</p>
+      </div>
+    </div>
+  </nav>
+  <main class="main-content">
+    <header class="top-header">
+      <div class="header-left">
+        <h2 class="page-title">{{ pageTitle }}</h2>
+      </div>
+      <div class="header-right">
+        <div class="date-display">{{ currentDate | date:'fullDate' }}</div>
+      </div>
+    </header>
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
+

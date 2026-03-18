@@ -1,0 +1,128 @@
+<div class="dashboard-grid">
+  <!-- Budget Overview -->
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Budget Overview</h3>
+      <a routerLink="/budget" class="btn btn-outline">View All</a>
+    </div>
+    <div class="card-body">
+      <div class="budget-metrics">
+        <div class="metric">
+          <span class="metric-label">Total Budget</span>
+          <span class="metric-value">₹3,500</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Spent</span>
+          <span class="metric-value text-danger">₹2,450</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Remaining</span>
+          <span class="metric-value text-success">₹1,050</span>
+        </div>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 70%"></div>
+        </div>
+        <span class="progress-text">70% used</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Transactions -->
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Recent Transactions</h3>
+      <a routerLink="/transactions" class="btn btn-outline">View All</a>
+    </div>
+    <div class="card-body">
+      <div class="transactions-list">
+        <div *ngFor="let transaction of getRecentTransactions()" class="transaction-item">
+          <div class="transaction-icon" [class]="transaction.type === 'income' ? 'income' : 'expense'">
+            {{ transaction.type === 'income' ? '↑' : '↓' }}
+          </div>
+          <div class="transaction-details">
+            <div class="transaction-desc">{{ transaction.description }}</div>
+            <div class="transaction-meta">
+              <span class="category">{{ transaction.category }}</span>
+              <span class="date">{{ transaction.date | date:'short' }}</span>
+            </div>
+          </div>
+          <div class="transaction-amount" [class]="transaction.type === 'income' ? 'income' : 'expense'">
+            {{ transaction.type === 'income' ? '+' : '-' }}{{ transaction.amount | currency:'INR' }}
+          </div>
+        </div>
+        <div *ngIf="getRecentTransactions().length === 0" class="empty-state">
+          <p>No recent transactions</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Savings Goals -->
+  <div class="card goals-card">
+    <div class="card-header">
+      <h3 class="card-title">Savings Goals</h3>
+      <a routerLink="/goals" class="btn btn-outline">View All</a>
+    </div>
+    <div class="card-body">
+      <div *ngFor="let goal of goals" class="goal-item">
+        <div class="goal-icon">{{ goal.icon }}</div>
+        <div class="goal-info">
+          <div class="goal-name">{{ goal.name }}</div>
+          <div class="goal-progress">
+            <div class="progress-bar small">
+              <div class="progress-fill" [style.width.%]="(goal.currentAmount / goal.targetAmount) * 100"></div>
+            </div>
+            <span class="progress-percent">{{ ((goal.currentAmount / goal.targetAmount) * 100).toFixed(0) }}%</span>
+          </div>
+        </div>
+        <div class="goal-amounts">
+          <div>₹{{ goal.currentAmount | number:'1.0-0' }}</div>
+          <div class="goal-target">/ ₹{{ goal.targetAmount | number:'1.0-0' }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="card actions-card">
+    <div class="card-header">
+      <h3 class="card-title">Quick Actions</h3>
+    </div>
+    <div class="card-body">
+      <a routerLink="/transactions" class="action-card">
+        <span class="action-icon">💳</span>
+        <span>Add Transaction</span>
+      </a>
+      <a routerLink="/budget" class="action-card">
+        <span class="action-icon">📊</span>
+        <span>Manage Budget</span>
+      </a>
+      <a routerLink="/goals" class="action-card">
+        <span class="action-icon">🎯</span>
+        <span>Set Goals</span>
+      </a>
+      <a routerLink="/analytics" class="action-card">
+        <span class="action-icon">📈</span>
+        <span>View Analytics</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Student Tips -->
+<div class="card tips-card mt-4">
+  <div class="card-header">
+    <h3 class="card-title">💡 Tips for Students</h3>
+  </div>
+  <div class="card-body">
+    <ul class="tips-list">
+      <li>Track daily expenses to identify spending patterns</li>
+      <li>Set aside 20% of pocket money for savings</li>
+      <li>Use cash for small purchases to avoid overspending</li>
+      <li>Review your budget weekly</li>
+    </ul>
+  </div>
+</div>
+
