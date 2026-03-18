@@ -1,0 +1,1 @@
+**Student Budget Planner** is a modern, responsive Single Page Application (SPA) built with **Angular 19** for personal finance management, targeted at students. It provides tools to track income/expenses, set budgets, monitor savings goals, and visualize spending patterns via an analytics dashboard. Data persists via LocalStorage.
